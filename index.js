@@ -67,11 +67,21 @@ function appendFile(string) {
     })
 }
 
-// 答案转sql
+// 数据转txt
+/*
+var a = [];
+console.log(a.map((s) => `${s.chinese}\|\|\|${s.english}`).join('\n'));
+*/
+
+// txt转sql
 function convertAnswerTxtToSql() {
     let lines = fs.readFileSync('answer.txt', 'utf8').split(/[\n\r]/);
     lines = Array.from(new Set(lines)).filter(s => !!s).map(s => {
-        return `INSERT INTO \`answer\` (text) VALUES ('${s.replace('。', '')}');`;
+        s = s.split(`\|\|\|`);
+        let chinese = s[0] || ''.replace(/[。！]/g, '');  // 去掉标点符号
+        let english = (s[1] || '').replace(/'/g, '\'\''); // ' 转义
+        english = english;
+        return `INSERT INTO \`answer\` (\`chinese\`, \`english\`) VALUES ('${chinese}', '${english}');`;
     }).sort();
     fs.writeFileSync('answer.sql', lines.join('\n'));
 }
