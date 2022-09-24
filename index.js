@@ -1,4 +1,4 @@
-// const { createServer } = require('http')
+const { createServer } = require('http')
 const closeWithGrace = require('close-with-grace')
 const dbPool = require('./src/db_pool')
 const apiResult = require('./src/api_result')
@@ -10,6 +10,7 @@ console.log('Starting ...');
 
 async function doQuery() {
     try {
+        // https://www.myanswersbook.com/
         // from： https://love.163.com/webapp/special/answerbook/#/ask
         let result = await apiResult.query({
             method: 'POST',
@@ -85,7 +86,7 @@ function convertAnswerTxtToSql() {
     }).sort();
     fs.writeFileSync('answer.sql', lines.join('\n'));
 }
-convertAnswerTxtToSql();
+// convertAnswerTxtToSql();
 
 // 去重
 function removeDuplicate() {
@@ -111,12 +112,58 @@ async function readSQLAndExecute() {
     }
     console.log("done");
 }
-removeDuplicate();
+// removeDuplicate();
 // readSQLAndExecute();
 
-closeWithGrace({ delay: 1000 }, function (opts, cb) {
+// 随机取一条
+async function getOne() {
+    let sql = `SELECT * FROM answer ORDER BY RAND() LIMIT 1;`;
+    try {
+        return await dbPool.query(sql);
+    } catch (err) {
+        console.error(err);
+    }
+    // dbPool.close();
+}
+
+const server = createServer(async function (req, res) {
+    if (closeWithGrace.closing) {
+        res.statusCode = 503
+        res.setHeader('Connection', 'close')
+        res.end('try again later')
+        return
+    }
+    res.writeHeader(200, { 'Content-Type': 'text/plain;charset=utf-8' });
+    // res.writeHeader(200, { 'Content-Type': 'text/html;charset=utf-8' });
+    switch (req.url) {
+        // http://localhost:3000/api/get
+        case '/api/get':
+            var resultArr = await getOne();
+            var result = resultArr[0];
+            // console.log(result);
+            res.end(JSON.stringify({
+                code: 200,
+                msg: "success",
+                data: result,
+            }))
+            break;
+        default:
+            res.end(JSON.stringify({
+                code: 404,
+                msg: "Not Found",
+                data: [],
+            }))
+            break;
+    }
+    // console.log(Object.keys(req));
+    console.log(req.url);
+})
+server.listen(3000)
+
+closeWithGrace({ delay: 500 }, function (opts, cb) {
     console.log(opts, 'closing')
     isExit = true;
     dbPool.close();
+    server.close();
 })
 
