@@ -1,0 +1,17 @@
+{
+  "name": "answerbook",
+  "version": "1.0.0",
+  "description": "答案之书",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "coder-xiaomo",
+  "license": "ISC",
+  "dependencies": {
+    "close-with-grace": "^1.1.0",
+    "fs": "^0.0.1-security",
+    "mysql": "^2.18.1",
+    "request": "^2.88.2"
+  }
+}
