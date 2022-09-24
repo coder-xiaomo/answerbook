@@ -4,20 +4,9 @@ const dbPool = require('./src/db_pool')
 const apiResult = require('./src/api_result')
 const fs = require('fs');
 
-const sqlFile = 'sql/sqls.sql';
+const sqlFile = 'sql/answer.sql';
 
 console.log('Starting ...');
-
-// const server = createServer(function (req, res) {
-//     if (closeWithGrace.closing) {
-//         res.statusCode = 503
-//         res.setHeader('Connection', 'close')
-//         res.end('try again later')
-//         return
-//     }
-//     res.end('hello world')
-// })
-// server.listen(3000)
 
 async function doQuery() {
     try {
@@ -40,9 +29,9 @@ async function doQuery() {
         // console.log(resultJSON);
         let data = resultJSON.data.activityVo;
         if (!!data.resultDetial) {
-            let sql = `INSERT INTO answer (wy_id, text) VALUES (${data.resultCode}, '${data.resultDetial}');`;
-            // console.log(data.resultCode, data.resultDetial, sql);
-            console.log(data.resultCode, data.resultDetial);
+            let sql = `INSERT INTO answer (text) VALUES ('${data.resultDetial}');`;
+            // console.log(data.resultDetial, sql);
+            console.log(data.resultDetial);
             await dbPool.query(sql);
             // appendFile(sql);
         }
@@ -82,14 +71,14 @@ function appendFile(string) {
 function convertAnswerTxtToSql() {
     let lines = fs.readFileSync('answer.txt', 'utf8').split(/[\n\r]/);
     lines = Array.from(new Set(lines)).filter(s => !!s).map(s => {
-        return `INSERT INTO answer (wy_id, text) VALUES (NULL, '${s.replace('。', '')}');`;
+        return `INSERT INTO \`answer\` (text) VALUES ('${s.replace('。', '')}');`;
     }).sort();
     fs.writeFileSync('answer.sql', lines.join('\n'));
 }
 // convertAnswerTxtToSql();
 
 // 去重
-function quchong() {
+function removeDuplicate() {
     let lines = fs.readFileSync(sqlFile, 'utf8').split(/[\n\r]/);
     lines = Array.from(new Set(lines)).filter(s => !!s).sort();
     fs.writeFileSync(sqlFile, lines.join('\n'));
@@ -108,17 +97,16 @@ async function readSQLAndExecute() {
             // console.error(err);
         }
         console.log(`count: ${++count}, errCount: ${errCount}, total: ${lines.length}`);
-        await sleep(1);
+        await sleep(10);
     }
     console.log("done");
 }
-quchong();
-readSQLAndExecute();
+removeDuplicate();
+// readSQLAndExecute();
 
 closeWithGrace({ delay: 1000 }, function (opts, cb) {
     console.log(opts, 'closing')
     isExit = true;
-    // server.close(cb)
     dbPool.close();
 })
 
