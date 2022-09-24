@@ -75,7 +75,7 @@ function convertAnswerTxtToSql() {
     }).sort();
     fs.writeFileSync('answer.sql', lines.join('\n'));
 }
-// convertAnswerTxtToSql();
+convertAnswerTxtToSql();
 
 // 去重
 function removeDuplicate() {
