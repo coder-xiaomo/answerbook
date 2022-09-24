@@ -1,7 +1,7 @@
 SET
   FOREIGN_KEY_CHECKS = 0;
 
-CREATE DATABASE `answerbook` CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_german2_ci';
+CREATE DATABASE `answerbook` CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci';
 
 USE `answerbook`;
 
@@ -15,8 +15,7 @@ CREATE TABLE `answer` (
   `english` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '英文',
   PRIMARY KEY (`id`),
   UNIQUE KEY `text` (`chinese`,`english`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 SET
   FOREIGN_KEY_CHECKS = 1;
-

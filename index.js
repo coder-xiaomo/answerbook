@@ -107,7 +107,7 @@ async function readSQLAndExecute() {
             // console.error(err);
         }
         console.log(`count: ${++count}, errCount: ${errCount}, total: ${lines.length}`);
-        await sleep(10);
+        // await sleep(10);
     }
     console.log("done");
 }
