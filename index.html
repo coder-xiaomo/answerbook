@@ -63,7 +63,8 @@
         <div style="display: grid; place-items: center; color: white; height: 100%;">
             <div style="text-align: center;">
                 <!-- <h1 style="font-size: 45px;">答案之书</h1> -->
-                <img class="do-not-select" src="./assets/img/title.png" alt="答案之书" style="max-width: 72%; max-height: 80px;">
+                <img class="do-not-select" src="./assets/img/title.png" alt="答案之书"
+                    style="max-width: 72%; max-height: 80px;">
             </div>
             <div>
                 <div
@@ -84,25 +85,48 @@
         </p>
     </div>
     <script>
-        function get() {
-            var xmlHttpRequest = new XMLHttpRequest();
-            xmlHttpRequest.open("GET", "./api/get"), true;
-            xmlHttpRequest.setRequestHeader("Content-Type", "text/plain");
-            xmlHttpRequest.send();
-
-            xmlHttpRequest.onreadystatechange = function () {
-                if (xmlHttpRequest.readyState == 4 && xmlHttpRequest.status == 200) {
-                    var data = xmlHttpRequest.responseText;
-                    var result = JSON.parse(data);
-                    console.log(result);
-                    var chinese = result.data["chinese"];
-                    var english = result.data["english"];
-                    console.log("chinese", chinese, "english", english);
-                    document.getElementById("chinese").innerHTML = chinese;
-                    document.getElementById("english").innerHTML = english;
-                }
+        var xmlHttpRequest = new XMLHttpRequest();
+        xmlHttpRequest.open("GET", "./assets/all.json"), true;
+        xmlHttpRequest.setRequestHeader("Content-Type", "text/plain");
+        xmlHttpRequest.send();
+        xmlHttpRequest.onreadystatechange = function () {
+            if (xmlHttpRequest.readyState == 4 && xmlHttpRequest.status == 200) {
+                var data = xmlHttpRequest.responseText;
+                var result = JSON.parse(data);
+                window.RESULT = result;
+                console.log(result);
             }
         }
+
+        function get() {
+            var one = window.RESULT[Math.floor(Math.random() * window.RESULT.length)];
+            console.log(one);
+            var chinese = one["chinese"];
+            var english = one["english"];
+            console.log("chinese", chinese, "english", english);
+            document.getElementById("chinese").innerHTML = chinese;
+            document.getElementById("english").innerHTML = english;
+        }
+
+        // function get() {
+        //     var xmlHttpRequest = new XMLHttpRequest();
+        //     xmlHttpRequest.open("GET", "./api/get"), true;
+        //     xmlHttpRequest.setRequestHeader("Content-Type", "text/plain");
+        //     xmlHttpRequest.send();
+
+        //     xmlHttpRequest.onreadystatechange = function () {
+        //         if (xmlHttpRequest.readyState == 4 && xmlHttpRequest.status == 200) {
+        //             var data = xmlHttpRequest.responseText;
+        //             var result = JSON.parse(data);
+        //             console.log(result);
+        //             var chinese = result.data["chinese"];
+        //             var english = result.data["english"];
+        //             console.log("chinese", chinese, "english", english);
+        //             document.getElementById("chinese").innerHTML = chinese;
+        //             document.getElementById("english").innerHTML = english;
+        //         }
+        //     }
+        // }
     </script>
 
 </body>

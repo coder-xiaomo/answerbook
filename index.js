@@ -126,6 +126,21 @@ async function getOne() {
     // dbPool.close();
 }
 
+// 取得全部
+async function getAll() {
+    let sql = `SELECT * FROM answer ORDER BY id;`;
+    try {
+        let result = await dbPool.query(sql);
+        console.log(JSON.stringify(result));
+        fs.writeFileSync("all.json", JSON.stringify(result));
+        return result;
+    } catch (err) {
+        console.error(err);
+    }
+    // dbPool.close();
+}
+getAll();
+
 const server = createServer(async function (req, res) {
     if (closeWithGrace.closing) {
         res.statusCode = 503
