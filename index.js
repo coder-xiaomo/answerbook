@@ -133,11 +133,20 @@ const server = createServer(async function (req, res) {
         res.end('try again later')
         return
     }
-    res.writeHeader(200, { 'Content-Type': 'text/plain;charset=utf-8' });
     // res.writeHeader(200, { 'Content-Type': 'text/html;charset=utf-8' });
+    if (req.url.startsWith("/assets")) {
+        // 直接返回静态文件
+        let image = fs.readFileSync(`.${req.url}`);
+        res.writeHeader(200, { 'Content-Type': 'image/jpeg' });
+        res.end(image);
+        return;
+    }
+
     switch (req.url) {
         // http://localhost:3000/api/get
         case '/api/get':
+            // api 接口
+            res.writeHeader(200, { 'Content-Type': 'text/plain;charset=utf-8' });
             var resultArr = await getOne();
             var result = resultArr[0];
             // console.log(result);
@@ -147,7 +156,15 @@ const server = createServer(async function (req, res) {
                 data: result,
             }))
             break;
+        case '/':
+            // html 页面
+            let html = fs.readFileSync("./index.html");
+            res.writeHeader(200, { 'Content-Type': 'text/html;charset=utf-8' });
+            res.end(html);
+            break;
         default:
+            // 404 报错
+            console.log(req.url);
             res.end(JSON.stringify({
                 code: 404,
                 msg: "Not Found",
@@ -155,7 +172,6 @@ const server = createServer(async function (req, res) {
             }))
             break;
     }
-    // console.log(Object.keys(req));
     console.log(req.url);
 })
 server.listen(3000)

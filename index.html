@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="./assets/img/favicon.png" type="image/x-icon">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+
+        .btn {
+            background-color: #005E60;
+            color: #dedfe6;
+            padding: 3px 5px;
+            transition: 0.3s;
+            cursor: pointer;
+            border: none;
+            border-radius: 3px;
+            margin-top: 3px;
+        }
+
+        .btn:hover {
+            background-color: #138689;
+            padding: 6px 10px;
+            margin-top: 0;
+        }
+
+        .do-not-select {
+            user-select: none;
+        }
+
+        #container {
+            height: 100%;
+            background-image: url('./assets/img/background.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+
+        #chinese {
+            font-size: 30px;
+            margin-bottom: 5px;
+        }
+
+        #english {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container">
+        <div style="display: grid; place-items: center; color: white; height: 100%;">
+            <div style="text-align: center;">
+                <!-- <h1 style="font-size: 45px;">答案之书</h1> -->
+                <img class="do-not-select" src="./assets/img/title.png" alt="答案之书" style="max-width: 72%; max-height: 80px;">
+            </div>
+            <div>
+                <div
+                    style="background: #005e60b5; display: inline-block; padding: 15px 25px; text-align: center; border-radius: 5px;">
+                    <div id="chinese">点击查看答案</div>
+                    <div id="english"></div>
+                    <div style="min-height: 40px;">
+                        <button class="btn do-not-select" onclick="get()">点击查看</button>
+                    </div>
+                </div>
+            </div>
+            <div></div>
+        </div>
+    </div>
+    <div class="do-not-select" style="position: absolute; bottom: 0; left: 0; right: 0;">
+        <p style="text-align: center; color: #3e9c9e; font-size: 12px; margin-bottom: 5px;">
+            - 仅供娱乐，请勿当真 -
+        </p>
+    </div>
+    <script>
+        function get() {
+            var xmlHttpRequest = new XMLHttpRequest();
+            xmlHttpRequest.open("GET", "./api/get"), true;
+            xmlHttpRequest.setRequestHeader("Content-Type", "text/plain");
+            xmlHttpRequest.send();
+
+            xmlHttpRequest.onreadystatechange = function () {
+                if (xmlHttpRequest.readyState == 4 && xmlHttpRequest.status == 200) {
+                    var data = xmlHttpRequest.responseText;
+                    var result = JSON.parse(data);
+                    console.log(result);
+                    var chinese = result.data["chinese"];
+                    var english = result.data["english"];
+                    console.log("chinese", chinese, "english", english);
+                    document.getElementById("chinese").innerHTML = chinese;
+                    document.getElementById("english").innerHTML = english;
+                }
+            }
+        }
+    </script>
+
+</body>
+
+</html>
